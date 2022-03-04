@@ -1,0 +1,19 @@
+{
+  "root": true,
+  "env": {
+    "node": true,
+    "jest": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "plugins": ["prettier", "import", "jest"],
+  "extends": [
+    "airbnb-base",
+    "prettier",
+    "plugin:prettier/recommended",
+    "plugin:import/recommended",
+    "eslint:recommended"
+  ]
+}
