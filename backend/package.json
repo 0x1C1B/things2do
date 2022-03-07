@@ -3,50 +3,50 @@
     "version": "1.0.0",
     "description": "Backend of the distributed todo application for recording tasks to be completed.",
     "contributors": [
-      {
-        "name" : "Constantin Müller"
-      },
-      {
-        "name" : "Christian Müller"
-      },
-      {
-        "name" : "Kemal Celik"
-      }
+        {
+            "name": "Constantin Müller"
+        },
+        {
+            "name": "Christian Müller"
+        },
+        {
+            "name": "Kemal Celik"
+        }
     ],
     "license": "MIT",
     "private": true,
     "scripts": {
-      "start": "cross-env NODE_ENV=production node dist/index.js",
-      "build": "babel src --out-dir dist",
-      "serve": "cross-env NODE_ENV=development nodemon --exec npx babel-node src/index.js",
-      "clean": "rimraf dist",
-      "test": "cross-env NODE_ENV=test jest .",
-      "lint": "eslint .",
-      "lint:fix": "eslint --fix .",
-      "prettier": "prettier --check .",
-      "prettier:fix": "prettier --write ."
+        "start": "cross-env NODE_ENV=production node dist/index.js",
+        "build": "babel src --out-dir dist",
+        "serve": "cross-env NODE_ENV=development nodemon --exec npx babel-node src/index.js",
+        "clean": "rimraf dist",
+        "test": "cross-env NODE_ENV=test jest .",
+        "lint": "eslint .",
+        "lint:fix": "eslint --fix .",
+        "prettier": "prettier --check .",
+        "prettier:fix": "prettier --write ."
     },
     "devDependencies": {
-      "@babel/cli": "^7.16.0",
-      "@babel/core": "^7.16.0",
-      "@babel/node": "^7.16.5",
-      "@babel/preset-env": "^7.16.4",
-      "eslint": "^8.4.1",
-      "eslint-config-airbnb-base": "^15.0.0",
-      "eslint-config-prettier": "^8.3.0",
-      "eslint-plugin-import": "^2.25.3",
-      "eslint-plugin-jest": "^25.3.0",
-      "eslint-plugin-prettier": "^4.0.0",
-      "jest": "^27.4.3",
-      "nodemon": "^2.0.15",
-      "prettier": "^2.5.1",
-      "rimraf": "^3.0.2",
-      "supertest": "^6.2.2"
+        "@babel/cli": "^7.16.0",
+        "@babel/core": "^7.16.0",
+        "@babel/node": "^7.16.5",
+        "@babel/preset-env": "^7.16.4",
+        "eslint": "^8.4.1",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-import": "^2.25.3",
+        "eslint-plugin-jest": "^25.3.0",
+        "eslint-plugin-prettier": "^4.0.0",
+        "jest": "^27.4.3",
+        "nodemon": "^2.0.15",
+        "prettier": "^2.5.1",
+        "rimraf": "^3.0.2",
+        "supertest": "^6.2.2"
     },
     "dependencies": {
-      "cross-env": "^7.0.3",
-      "dotenv": "^10.0.0",
-      "joi": "^17.5.0"
+        "cross-env": "^7.0.3",
+        "dotenv": "^10.0.0",
+        "joi": "^17.5.0",
+        "winston": "^3.6.0"
     }
-  }
-  
+}

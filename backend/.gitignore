@@ -342,3 +342,7 @@ modules.xml
 *.ipr
 
 # End of https://www.toptal.com/developers/gitignore/api/node,visualstudiocode,webstorm+iml,eclipse,git,svn,certificates
+
+### Environment ###
+!.env
+.env.*
