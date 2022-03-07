@@ -42,6 +42,11 @@ loadEnvironmentFiles();
 const envSchema = joi
   .object()
   .keys({
+    NODE_ENV: joi
+      .string()
+      .valid("test", "development", "production")
+      .default("development"),
+    PORT: joi.number().min(1).max(65000).default(3000),
     LOGGER_LEVEL: joi
       .string()
       .valid(
@@ -56,6 +61,8 @@ const envSchema = joi
       )
       .default("notice"),
     LOGGER_FILENAME: joi.string().optional(),
+    SECURITY_REQUEST_LIMIT_RATE: joi.number().greater(0).default(50),
+    SECURITY_REQUEST_LIMIT_BURST: joi.number().greater(0).default(100),
   })
   .unknown();
 
@@ -68,8 +75,16 @@ if (error) {
 }
 
 export default {
+  profile: env.NODE_ENV,
+  port: env.PORT,
   logger: {
     level: env.LOGGER_LEVEL,
     filename: env.LOGGER_FILENAME,
+  },
+  security: {
+    requestLimit: {
+      rate: env.SECURITY_REQUEST_LIMIT_RATE,
+      burst: env.SECURITY_REQUEST_LIMIT_BURST,
+    },
   },
 };

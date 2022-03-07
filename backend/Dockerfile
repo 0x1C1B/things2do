@@ -27,4 +27,6 @@ COPY --from=build /usr/local/src/things2do/backend/dist ./dist
 
 EXPOSE 3000
 
+VOLUME [ "/usr/local/bin/things2do/backend/resources" ]
+
 CMD npm run start
