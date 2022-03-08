@@ -1,0 +1,452 @@
+openapi: "3.0.1"
+info:
+  title: Things2Do
+  version: 1.0.0
+  description: Distributed todo application for recording tasks to be completed.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+tags:
+  - name: Group
+    description: Everything about your task groups
+  - name: Task
+    description: The actual task domain
+  - name: Milestone
+    description: Partial steps of a task
+paths:
+  /groups:
+    get:
+      tags:
+        - Group
+      summary: "Fetch all available groups"
+      description: "Fetchs a list of all available groups"
+      responses:
+        "200":
+          description: "Sucessfully fetched all available groups"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Group"
+    post:
+      tags:
+        - Group
+      summary: "Creates a new group"
+      description: "Creates a new group for grouping tasks"
+      requestBody:
+        $ref: "#/components/requestBodies/GroupCreatePayload"
+      responses:
+        "201":
+          description: "Successfully created the new group"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+  /groups/{groupId}:
+    get:
+      tags:
+        - Group
+      summary: "Fetch a specific group"
+      description: "Fetch information about a specific group"
+      parameters:
+        - name: "groupId"
+          in: "path"
+          description: "Unique identifier of the group"
+          required: true
+          schema:
+            type: "string"
+            format: "id"
+      responses:
+        "200":
+          description: "Sucessfully fetched the requested group"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+    patch:
+      tags:
+        - Group
+      summary: "Update a specific group"
+      description: "Update fields of a specific group"
+      parameters:
+        - name: "groupId"
+          in: "path"
+          description: "Unique identifier of the group"
+          required: true
+          schema:
+            type: "string"
+            format: "id"
+      requestBody:
+        $ref: "#/components/requestBodies/GroupUpdatePayload"
+      responses:
+        "200":
+          description: "Sucessfully updated the requested group"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+    delete:
+      tags:
+        - Group
+      summary: "Delete a specific group"
+      description: "Delete a specific group"
+      parameters:
+        - name: "groupId"
+          in: "path"
+          description: "Unique identifier of the group"
+          required: true
+          schema:
+            type: "string"
+            format: "id"
+      responses:
+        "204":
+          description: "Sucessfully deleted the requested group"
+  /groups/{groupId}/tasks:
+    get:
+      tags:
+        - Task
+      summary: "Fetch all available tasks of a given group"
+      description: "Fetchs a list of all available tasks of a given group"
+      parameters:
+        - name: "groupId"
+          in: "path"
+          description: "Unique identifier of the group"
+          required: true
+          schema:
+            type: "string"
+            format: "id"
+      responses:
+        "200":
+          description: "Sucessfully fetched all available tasks"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+    post:
+      tags:
+        - Task
+      summary: "Creates a new task in a given group"
+      description: "Creates a new task in a given group"
+      parameters:
+        - name: "groupId"
+          in: "path"
+          description: "Unique identifier of the group"
+          required: true
+          schema:
+            type: "string"
+            format: "id"
+      requestBody:
+        $ref: "#/components/requestBodies/GroupCreatePayload"
+      responses:
+        "201":
+          description: "Successfully created the new task"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+  /tasks/{taskId}:
+    get:
+      tags:
+        - Task
+      summary: "Fetch a specific task"
+      description: "Fetch information about a specific task"
+      parameters:
+        - name: "taskId"
+          in: "path"
+          description: "Unique identifier of the task"
+          required: true
+          schema:
+            type: "string"
+            format: "id"
+      responses:
+        "200":
+          description: "Sucessfully fetched the requested task"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+    patch:
+      tags:
+        - Task
+      summary: "Update a specific task"
+      description: "Update fields of a specific task"
+      parameters:
+        - name: "taskId"
+          in: "path"
+          description: "Unique identifier of the task"
+          required: true
+          schema:
+            type: "string"
+            format: "id"
+      requestBody:
+        $ref: "#/components/requestBodies/TaskUpdatePayload"
+      responses:
+        "200":
+          description: "Sucessfully updated the requested task"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+    delete:
+      tags:
+        - Task
+      summary: "Delete a specific task"
+      description: "Delete a specific task"
+      parameters:
+        - name: "taskId"
+          in: "path"
+          description: "Unique identifier of the task"
+          required: true
+          schema:
+            type: "string"
+            format: "id"
+      responses:
+        "204":
+          description: "Sucessfully deleted the requested task"
+  /tasks/{taskId}/milestones:
+    get:
+      tags:
+        - Milestone
+      summary: "Fetch all available milestones of a given task"
+      description: "Fetchs a list of all available milestones of a given task"
+      parameters:
+        - name: "taskId"
+          in: "path"
+          description: "Unique identifier of the task"
+          required: true
+          schema:
+            type: "string"
+            format: "id"
+      responses:
+        "200":
+          description: "Sucessfully fetched all available milestones"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Milestone"
+    post:
+      tags:
+        - Milestone
+      summary: "Creates a new milestone in a given task"
+      description: "Creates a new milestone in a given task"
+      parameters:
+        - name: "taskId"
+          in: "path"
+          description: "Unique identifier of the task"
+          required: true
+          schema:
+            type: "string"
+            format: "id"
+      requestBody:
+        $ref: "#/components/requestBodies/MilestoneCreatePayload"
+      responses:
+        "201":
+          description: "Successfully created the new milestone"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Milestone"
+  /milestones/{milestoneId}:
+    get:
+      tags:
+        - Milestone
+      summary: "Fetch a specific milestone"
+      description: "Fetch information about a specific milestone"
+      parameters:
+        - name: "milestoneId"
+          in: "path"
+          description: "Unique identifier of the milestone"
+          required: true
+          schema:
+            type: "string"
+            format: "id"
+      responses:
+        "200":
+          description: "Sucessfully fetched the requested milestone"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Milestone"
+    patch:
+      tags:
+        - Milestone
+      summary: "Update a specific milestone"
+      description: "Update fields of a specific milestone"
+      parameters:
+        - name: "milestoneId"
+          in: "path"
+          description: "Unique identifier of the milestone"
+          required: true
+          schema:
+            type: "string"
+            format: "id"
+      requestBody:
+        $ref: "#/components/requestBodies/MilestoneUpdatePayload"
+      responses:
+        "200":
+          description: "Sucessfully updated the requested milestone"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Milestone"
+    delete:
+      tags:
+        - Milestone
+      summary: "Delete a specific milestone"
+      description: "Delete a specific milestone"
+      parameters:
+        - name: "milestoneId"
+          in: "path"
+          description: "Unique identifier of the milestone"
+          required: true
+          schema:
+            type: "string"
+            format: "id"
+      responses:
+        "204":
+          description: "Sucessfully deleted the requested milestone"
+components:
+  schemas:
+    Group:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "id"
+        name:
+          type: "string"
+          maxLength: 200
+        description:
+          type: "string"
+          maxLength: 1000
+    Task:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "id"
+        name:
+          type: "string"
+          maxLength: 200
+        description:
+          type: "string"
+          maxLength: 1000
+        groupId:
+          type: "string"
+          format: "id"
+        finished:
+          type: "boolean"
+        priority:
+          type: "integer"
+          minimum: 1
+          maximum: 10
+        expiresAt:
+          type: "string"
+          format: "date-time"
+    Milestone:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "id"
+        name:
+          type: "string"
+          maxLength: 200
+        description:
+          type: "string"
+          maxLength: 1000
+        taskId:
+          type: "string"
+          format: "id"
+        finished:
+          type: "boolean"
+  requestBodies:
+    GroupCreatePayload:
+      description: "Fields of new group to add"
+      required: true
+      content:
+        application/json:
+          schema:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+              description:
+                type: "string"
+            required:
+              - name
+    GroupUpdatePayload:
+      description: "Fields of new group to update"
+      required: true
+      content:
+        application/json:
+          schema:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+              description:
+                type: "string"
+    TaskCreatePayload:
+      description: "Fields of new task to add"
+      required: true
+      content:
+        application/json:
+          schema:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+              description:
+                type: "string"
+            required:
+              - name
+    TaskUpdatePayload:
+      description: "Fields of new task to update"
+      required: true
+      content:
+        application/json:
+          schema:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+              description:
+                type: "string"
+              groupId:
+                type: "string"
+              finished:
+                type: "boolean"
+    MilestoneCreatePayload:
+      description: "Fields of new milestone to add"
+      required: true
+      content:
+        application/json:
+          schema:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+              description:
+                type: "string"
+            required:
+              - name
+    MilestoneUpdatePayload:
+      description: "Fields of new milestone to update"
+      required: true
+      content:
+        application/json:
+          schema:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+              description:
+                type: "string"
+              finished:
+                type: "boolean"
