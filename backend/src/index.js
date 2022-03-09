@@ -3,12 +3,13 @@
 /**
  * @file Application start up script which loads the environment, sets up an HTTP server and starts the application.
  */
-
+import util from "util";
 import restify from "restify";
 import errors from "restify-errors";
 import env from "./env";
 import logger from "./utils/logger";
 import morgan from "./utils/morgan";
+import mongoose from "./utils/mongoose";
 
 const app = restify.createServer();
 
@@ -56,10 +57,27 @@ const onServerError = (err) => {
 app.on("error", onServerError);
 app.on("restifyError", onRestifyError);
 
-process.on("SIGTERM", () => app.close());
+process.on("SIGINT", () => {
+  util
+    .promisify(app.close)()
+    .then(mongoose.close())
+    .then(() => logger.notice("Application stopped"))
+    .finally(() => process.exit(0));
+});
 
-app.listen(env.port, () => {
-  logger.notice(`Application started and is listening on port '${env.port}'`);
+function setup() {
+  logger.notice("Application is starting");
   logger.notice(`Environment of profile '${env.profile}' was loaded`);
   logger.notice(`Logger level was set to '${env.logger.level}'`);
-});
+
+  mongoose
+    .openUri(env.database.uri)
+    .then(() => app.listen(env.port))
+    .then(() => {
+      logger.notice(
+        `Application started and is listening on port '${env.port}'`
+      );
+    });
+}
+
+setup();

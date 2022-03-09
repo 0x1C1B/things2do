@@ -63,6 +63,7 @@ const envSchema = joi
     LOGGER_FILENAME: joi.string().optional(),
     SECURITY_REQUEST_LIMIT_RATE: joi.number().greater(0).default(50),
     SECURITY_REQUEST_LIMIT_BURST: joi.number().greater(0).default(100),
+    DATABASE_URI: joi.string().required().uri(),
   })
   .unknown();
 
@@ -86,5 +87,8 @@ export default {
       rate: env.SECURITY_REQUEST_LIMIT_RATE,
       burst: env.SECURITY_REQUEST_LIMIT_BURST,
     },
+  },
+  database: {
+    uri: env.DATABASE_URI,
   },
 };
