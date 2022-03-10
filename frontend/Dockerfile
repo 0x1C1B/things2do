@@ -7,6 +7,9 @@ COPY ./package.json ./package.json
 COPY ./package-lock.json ./package-lock.json
 RUN npm install
 
+ARG THINGS2DO_API
+ENV REACT_APP_THINGS2DO_API=$THINGS2DO_API
+
 COPY .env* .
 COPY tailwind.config.js ./tailwind.config.js
 COPY src ./src

@@ -1,0 +1,74 @@
+version: "3.9"
+services:
+  gateway:
+    image: traefik:latest
+    command:
+      - --providers.docker
+      - --entryPoints.frontend.address=:80
+      - --entryPoints.backend.address=:8080
+    ports:
+      - 80:80
+      - 8080:8080
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        read_only: true
+  database:
+    image: mongo:latest
+    restart: always
+    volumes:
+      - datadb:/data/db
+      - configdb:/data/configdb
+    expose:
+      - 27017
+  backend:
+    build:
+      context: ./backend
+    image: things2do/backend
+    depends_on:
+      - database
+    restart: always
+    environment:
+      # This configures the backend service using runtime variables. The
+      # configuration is also possible via the environment files stored in
+      # the mounted volume.
+      PORT: 3000
+      DATABASE_URI: mongodb://database:27017/things2do
+    expose:
+      - 3000
+    volumes:
+      - type: bind
+        source: ./backend/resources
+        target: /usr/local/bin/things2do/backend/resources
+        read_only: true
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.backend.entrypoints=backend
+      - traefik.http.routers.backend.rule=PathPrefix(`/`)
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # The frontend is run by the browser. Each API call is made from
+        # outside of the virtual docker network and must therefore be made
+        # through the gateway. Therefore, the gateway address and not the
+        # address of the backend container should be specified here.
+        #
+        # The argument is passed to the SPA at build time and hardcoded by
+        # the build tools. The browser does not recognize environment
+        # variables at runtime.
+        THINGS2DO_API: ${THINGS2DO_API:-http://localhost:8080}
+    image: things2do/frontend
+    restart: always
+    environment:
+      PORT: 80
+    expose:
+      - 80
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.frontend.entrypoints=frontend
+      - traefik.http.routers.frontend.rule=PathPrefix(`/`)
+volumes:
+  datadb:
+  configdb:

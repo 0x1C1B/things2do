@@ -6,6 +6,7 @@
 import util from "util";
 import restify from "restify";
 import errors from "restify-errors";
+import cors from "cors";
 import env from "./env";
 import logger from "./utils/logger";
 import morgan from "./utils/morgan";
@@ -23,6 +24,7 @@ app.use(
     ip: true,
   })
 );
+app.use(cors());
 app.use(morgan());
 
 const onRestifyError = (req, res, err, next) => {
