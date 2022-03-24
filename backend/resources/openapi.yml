@@ -29,6 +29,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Group"
+              example:
+                - id: "507f1f77bcf86cd799439011"
+                  name: "Gardening"
+                  description:
+                    "Contains all the tasks that arise in the garden\n
+                    and around the house."
     post:
       tags:
         - Group
@@ -43,6 +49,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Group"
+              example:
+                id: "507f1f77bcf86cd799439011"
+                name: "Gardening"
+                description: "Contains all the tasks that arise in the garden\n
+                  and around the house."
+        "400":
+          $ref: "#/components/responses/BadRequestError"
   /groups/{groupId}:
     get:
       tags:
@@ -57,6 +70,7 @@ paths:
           schema:
             type: "string"
             format: "id"
+            example: "507f1f77bcf86cd799439011"
       responses:
         "200":
           description: "Sucessfully fetched the requested group"
@@ -64,6 +78,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Group"
+              example:
+                id: "507f1f77bcf86cd799439011"
+                name: "Gardening"
+                description: "Contains all the tasks that arise in the garden\n
+                  and around the house."
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
     patch:
       tags:
         - Group
@@ -77,6 +100,7 @@ paths:
           schema:
             type: "string"
             format: "id"
+            example: "507f1f77bcf86cd799439011"
       requestBody:
         $ref: "#/components/requestBodies/GroupUpdatePayload"
       responses:
@@ -86,6 +110,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Group"
+              example:
+                id: "507f1f77bcf86cd799439011"
+                name: "Gardening and design"
+                description: "Contains all the tasks that arise in the garden\n
+                  and around the house."
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
     delete:
       tags:
         - Group
@@ -99,9 +132,14 @@ paths:
           schema:
             type: "string"
             format: "id"
+            example: "507f1f77bcf86cd799439011"
       responses:
         "204":
           description: "Sucessfully deleted the requested group"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
   /groups/{groupId}/tasks:
     get:
       tags:
@@ -116,6 +154,7 @@ paths:
           schema:
             type: "string"
             format: "id"
+            example: "507f1f77bcf86cd799439011"
       responses:
         "200":
           description: "Sucessfully fetched all available tasks"
@@ -125,6 +164,19 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Task"
+              example:
+                - id: "507f191e810c19729de860ea"
+                  name: "Shoveling snow"
+                  description: "Snow needs to be shoveled in the driveway and\n
+                    backyard."
+                  priority: 6
+                  groupId: "507f1f77bcf86cd799439011"
+                  expiresAt: "2019-09-07T-15:50+00"
+                  finished: false
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
     post:
       tags:
         - Task
@@ -138,8 +190,9 @@ paths:
           schema:
             type: "string"
             format: "id"
+            example: "507f1f77bcf86cd799439011"
       requestBody:
-        $ref: "#/components/requestBodies/GroupCreatePayload"
+        $ref: "#/components/requestBodies/TaskCreatePayload"
       responses:
         "201":
           description: "Successfully created the new task"
@@ -147,6 +200,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Task"
+              example:
+                id: "507f191e810c19729de860ea"
+                name: "Shoveling snow"
+                description: "Snow needs to be shoveled in the driveway and\n
+                  backyard."
+                priority: 6
+                groupId: "507f1f77bcf86cd799439011"
+                expiresAt: "2019-09-07T-15:50+00"
+                finished: false
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
   /tasks/{taskId}:
     get:
       tags:
@@ -161,6 +227,7 @@ paths:
           schema:
             type: "string"
             format: "id"
+            example: "507f191e810c19729de860ea"
       responses:
         "200":
           description: "Sucessfully fetched the requested task"
@@ -168,6 +235,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Task"
+              example:
+                id: "507f191e810c19729de860ea"
+                name: "Shoveling snow"
+                description: "Snow needs to be shoveled in the driveway and\n
+                  backyard."
+                priority: 6
+                groupId: "507f1f77bcf86cd799439011"
+                expiresAt: "2019-09-07T-15:50+00"
+                finished: false
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
     patch:
       tags:
         - Task
@@ -181,6 +261,7 @@ paths:
           schema:
             type: "string"
             format: "id"
+            example: "507f191e810c19729de860ea"
       requestBody:
         $ref: "#/components/requestBodies/TaskUpdatePayload"
       responses:
@@ -190,6 +271,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Task"
+              example:
+                id: "507f191e810c19729de860ea"
+                name: "Shoveling snow"
+                description: "Snow needs to be shoveled in the driveway and\n
+                  backyard."
+                priority: 8
+                groupId: "507f1f77bcf86cd799439011"
+                expiresAt: "2019-09-07T-15:50+00"
+                finished: true
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
     delete:
       tags:
         - Task
@@ -203,9 +297,14 @@ paths:
           schema:
             type: "string"
             format: "id"
+            example: "507f191e810c19729de860ea"
       responses:
         "204":
           description: "Sucessfully deleted the requested task"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
   /tasks/{taskId}/milestones:
     get:
       tags:
@@ -220,6 +319,7 @@ paths:
           schema:
             type: "string"
             format: "id"
+            example: "507f191e810c19729de860ea"
       responses:
         "200":
           description: "Sucessfully fetched all available milestones"
@@ -229,6 +329,14 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Milestone"
+              example:
+                - id: "00000020f51bb4362eee2a4d"
+                  name: "Shovel snow in front of the front door"
+                  finished: false
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
     post:
       tags:
         - Milestone
@@ -242,6 +350,7 @@ paths:
           schema:
             type: "string"
             format: "id"
+            example: "507f191e810c19729de860ea"
       requestBody:
         $ref: "#/components/requestBodies/MilestoneCreatePayload"
       responses:
@@ -251,6 +360,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Milestone"
+              example:
+                id: "00000020f51bb4362eee2a4d"
+                name: "Shovel snow in front of the front door"
+                finished: false
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
   /milestones/{milestoneId}:
     get:
       tags:
@@ -265,6 +382,7 @@ paths:
           schema:
             type: "string"
             format: "id"
+            example: "00000020f51bb4362eee2a4d"
       responses:
         "200":
           description: "Sucessfully fetched the requested milestone"
@@ -272,6 +390,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Milestone"
+              example:
+                id: "00000020f51bb4362eee2a4d"
+                name: "Shovel snow in front of the front door"
+                finished: false
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
     patch:
       tags:
         - Milestone
@@ -285,6 +411,7 @@ paths:
           schema:
             type: "string"
             format: "id"
+            example: "00000020f51bb4362eee2a4d"
       requestBody:
         $ref: "#/components/requestBodies/MilestoneUpdatePayload"
       responses:
@@ -294,6 +421,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Milestone"
+              example:
+                id: "00000020f51bb4362eee2a4d"
+                name: "Shovel snow in front of the front door"
+                finished: true
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
     delete:
       tags:
         - Milestone
@@ -307,11 +442,26 @@ paths:
           schema:
             type: "string"
             format: "id"
+            example: "00000020f51bb4362eee2a4d"
       responses:
         "204":
           description: "Sucessfully deleted the requested milestone"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
 components:
   schemas:
+    Error:
+      type: "object"
+      properties:
+        code:
+          type: "string"
+        message:
+          type: "string"
+      required:
+        - code
+        - message
     Group:
       type: "object"
       properties:
@@ -323,7 +473,10 @@ components:
           maxLength: 200
         description:
           type: "string"
-          maxLength: 1000
+          maxLength: 2000
+      required:
+        - id
+        - name
     Task:
       type: "object"
       properties:
@@ -335,7 +488,7 @@ components:
           maxLength: 200
         description:
           type: "string"
-          maxLength: 1000
+          maxLength: 2000
         groupId:
           type: "string"
           format: "id"
@@ -348,6 +501,11 @@ components:
         expiresAt:
           type: "string"
           format: "date-time"
+      required:
+        - id
+        - name
+        - groupId
+        - finished
     Milestone:
       type: "object"
       properties:
@@ -359,12 +517,17 @@ components:
           maxLength: 200
         description:
           type: "string"
-          maxLength: 1000
+          maxLength: 2000
         taskId:
           type: "string"
           format: "id"
         finished:
           type: "boolean"
+      required:
+        - id
+        - name
+        - taskId
+        - finished
   requestBodies:
     GroupCreatePayload:
       description: "Fields of new group to add"
@@ -376,10 +539,16 @@ components:
             properties:
               name:
                 type: "string"
+                maxLength: 200
               description:
                 type: "string"
+                maxLength: 2000
             required:
               - name
+          example:
+            name: "Gardening"
+            description: "Contains all the tasks that arise in the garden\n
+              and around the house."
     GroupUpdatePayload:
       description: "Fields of new group to update"
       required: true
@@ -390,8 +559,12 @@ components:
             properties:
               name:
                 type: "string"
+                maxLength: 200
               description:
                 type: "string"
+                maxLength: 2000
+          example:
+            name: "Gardening and design"
     TaskCreatePayload:
       description: "Fields of new task to add"
       required: true
@@ -402,10 +575,24 @@ components:
             properties:
               name:
                 type: "string"
+                maxLength: 200
               description:
                 type: "string"
+                maxLength: 2000
+              priority:
+                type: "integer"
+                minimum: 1
+                maximum: 10
+              expiresAt:
+                type: "string"
+                format: "date-time"
             required:
               - name
+          example:
+            name: "Shoveling snow"
+            description: "Snow needs to be shoveled in the driveway and backyard."
+            priority: 6
+            expiresAt: "2019-09-07T-15:50+00"
     TaskUpdatePayload:
       description: "Fields of new task to update"
       required: true
@@ -416,12 +603,22 @@ components:
             properties:
               name:
                 type: "string"
+                maxLength: 200
               description:
                 type: "string"
-              groupId:
-                type: "string"
+                maxLength: 2000
               finished:
                 type: "boolean"
+              priority:
+                type: "integer"
+                minimum: 1
+                maximum: 10
+              expiresAt:
+                type: "string"
+                format: "date-time"
+          example:
+            priority: 8
+            finished: true
     MilestoneCreatePayload:
       description: "Fields of new milestone to add"
       required: true
@@ -432,10 +629,14 @@ components:
             properties:
               name:
                 type: "string"
+                maxLength: 200
               description:
                 type: "string"
+                maxLength: 2000
             required:
               - name
+          example:
+            name: "Shovel snow in front of the front door"
     MilestoneUpdatePayload:
       description: "Fields of new milestone to update"
       required: true
@@ -446,7 +647,31 @@ components:
             properties:
               name:
                 type: "string"
+                maxLength: 200
               description:
                 type: "string"
+                maxLength: 2000
               finished:
                 type: "boolean"
+          example:
+            finished: true
+  responses:
+    InternalServerError:
+      description: "Is sent in the event of server-internal errors."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    BadRequestError:
+      description: "Used when the client provides incorrect information in the\n
+        request."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFoundError:
+      description: "Used when a resource could not be found."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"

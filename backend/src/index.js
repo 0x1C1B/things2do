@@ -11,8 +11,16 @@ import env from "./env";
 import logger from "./utils/logger";
 import morgan from "./utils/morgan";
 import mongoose from "./utils/mongoose";
+import GroupService from "./services/group.service";
+import RootController from "./controllers/root.controller";
+import GroupController from "./controllers/group.controller";
 
 const app = restify.createServer();
+
+const groupService = new GroupService();
+
+const rootController = new RootController();
+const groupController = new GroupController(groupService);
 
 app.use(restify.plugins.acceptParser(app.acceptable));
 app.use(restify.plugins.queryParser());
@@ -72,6 +80,9 @@ function setup() {
   logger.notice(`Environment of profile '${env.profile}' was loaded`);
   logger.notice(`Logger level was set to '${env.logger.level}'`);
 
+  rootController.register(app);
+  groupController.register(app);
+
   mongoose
     .openUri(env.database.uri)
     .then(() => app.listen(env.port))
@@ -82,4 +93,5 @@ function setup() {
     });
 }
 
+// Application entry point
 setup();

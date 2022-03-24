@@ -15,5 +15,9 @@
     "plugin:prettier/recommended",
     "plugin:import/recommended",
     "eslint:recommended"
-  ]
+  ],
+  "rules": {
+    "no-underscore-dangle": "off",
+    "class-methods-use-this": "off"
+  }
 }
