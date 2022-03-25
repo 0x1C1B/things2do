@@ -13,18 +13,22 @@ import morgan from "./utils/morgan";
 import mongoose from "./utils/mongoose";
 import GroupService from "./services/group.service";
 import TaskService from "./services/task.service";
+import MilestoneService from "./services/milestone.service";
 import RootController from "./controllers/root.controller";
 import GroupController from "./controllers/group.controller";
 import TaskController from "./controllers/task.controller";
+import MilestoneController from "./controllers/milestone.controller";
 
 const app = restify.createServer();
 
 const groupService = new GroupService();
 const taskService = new TaskService();
+const milestoneService = new MilestoneService();
 
 const rootController = new RootController();
 const groupController = new GroupController(groupService);
 const taskController = new TaskController(taskService);
+const milestoneController = new MilestoneController(milestoneService);
 
 app.use(restify.plugins.acceptParser(app.acceptable));
 app.use(restify.plugins.queryParser());
@@ -86,6 +90,8 @@ function setup() {
 
   rootController.register(app);
   groupController.register(app);
+  taskController.register(app);
+  milestoneController.register(app);
 
   mongoose
     .openUri(env.database.uri)
