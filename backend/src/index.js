@@ -12,15 +12,19 @@ import logger from "./utils/logger";
 import morgan from "./utils/morgan";
 import mongoose from "./utils/mongoose";
 import GroupService from "./services/group.service";
+import TaskService from "./services/task.service";
 import RootController from "./controllers/root.controller";
 import GroupController from "./controllers/group.controller";
+import TaskController from "./controllers/task.controller";
 
 const app = restify.createServer();
 
 const groupService = new GroupService();
+const taskService = new TaskService();
 
 const rootController = new RootController();
 const groupController = new GroupController(groupService);
+const taskController = new TaskController(taskService);
 
 app.use(restify.plugins.acceptParser(app.acceptable));
 app.use(restify.plugins.queryParser());
