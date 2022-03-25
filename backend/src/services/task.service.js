@@ -25,7 +25,7 @@ export default class TaskService {
         name: joi.string().max(200).required(),
         description: joi.string().max(2000).optional(),
         priority: joi.number().integer().min(1).max(10).optional(),
-        expiresAt: joi.date().iso().optional(),
+        expiresAt: joi.date().iso().min("now").optional(),
       }),
       doc
     );
@@ -40,7 +40,8 @@ export default class TaskService {
         name: joi.string().max(200).optional(),
         description: joi.string().max(2000).allow(null).optional(),
         priority: joi.number().integer().min(1).max(10).allow(null).optional(),
-        expiresAt: joi.date().iso().allow(null).optional(),
+        expiresAt: joi.date().iso().min("now").allow(null).optional(),
+        finished: joi.boolean().optional(),
       }),
       update
     );

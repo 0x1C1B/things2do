@@ -12,16 +12,14 @@ const TaskSchema = new mongoose.Schema(
       type: String,
       maxlength: 2000,
     },
-
     groupId: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "Group",
     },
-
     finished: {
       type: Boolean,
+      default: false,
     },
-
     priority: {
       type: Number,
       min: 1,

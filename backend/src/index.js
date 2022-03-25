@@ -7,10 +7,12 @@ import util from "util";
 import restify from "restify";
 import errors from "restify-errors";
 import cors from "cors";
+
 import env from "./env";
 import logger from "./utils/logger";
 import morgan from "./utils/morgan";
 import mongoose from "./utils/mongoose";
+
 import GroupService from "./services/group.service";
 import TaskService from "./services/task.service";
 import MilestoneService from "./services/milestone.service";
@@ -83,7 +85,7 @@ process.on("SIGINT", () => {
     .finally(() => process.exit(0));
 });
 
-function setup() {
+function main() {
   logger.notice("Application is starting");
   logger.notice(`Environment of profile '${env.profile}' was loaded`);
   logger.notice(`Logger level was set to '${env.logger.level}'`);
@@ -104,4 +106,4 @@ function setup() {
 }
 
 // Application entry point
-setup();
+main();

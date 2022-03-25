@@ -18,6 +18,7 @@ const MilestoneSchema = new mongoose.Schema(
     },
     finished: {
       type: Boolean,
+      default: false,
     },
   },
   { collection: "milestones" }

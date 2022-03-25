@@ -1,7 +1,3 @@
-// eslint-disable-next-line no-unused-vars
-import { Server, Request, Response } from "restify";
-// eslint-disable-next-line no-unused-vars
-import TaskService from "../services/task.service";
 import { asyncError } from "../utils/error";
 
 export default class TaskController {

@@ -83,6 +83,7 @@ export default class MilestoneService {
       name: doc.name,
       description: doc.description || undefined,
       finished: doc.finished,
+      taskId: typeof doc.taskId === "object" ? doc.taskId._id : doc.taskId,
     };
   }
 }
