@@ -1,0 +1,131 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: things2do-database-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 256Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: things2do-database
+spec:
+  selector:
+    matchLabels:
+      app: things2do-database
+  template:
+    metadata:
+      labels:
+        app: things2do-database
+    spec:
+      containers:
+        - name: things2do-database
+          image: mongo:latest
+          resources:
+            limits:
+              memory: 200Mi
+              cpu: "1"
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: things2do-database-storage
+              mountPath: /data/db
+          imagePullPolicy: Never
+      volumes:
+        - name: things2do-database-storage
+          persistentVolumeClaim:
+            claimName: things2do-database-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: things2do-database
+spec:
+  selector:
+    app: things2do-database
+  ports:
+    - port: 27017
+      targetPort: 27017
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: things2do-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: things2do-backend
+  template:
+    metadata:
+      labels:
+        app: things2do-backend
+    spec:
+      containers:
+        - name: things2do-backend
+          image: things2do/backend:latest
+          resources:
+            limits:
+              memory: 200Mi
+              cpu: "1"
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: DATABASE_URI
+              value: mongodb://things2do-database:27017/things2do
+          imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: things2do-backend
+spec:
+  selector:
+    app: things2do-backend
+  ports:
+    - port: 8080
+      targetPort: 3000
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: things2do-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: things2do-frontend
+  template:
+    metadata:
+      labels:
+        app: things2do-frontend
+    spec:
+      containers:
+        - name: things2do-frontend
+          image: things2do/frontend:latest
+          resources:
+            limits:
+              memory: 200Mi
+              cpu: "1"
+          ports:
+            - containerPort: 80
+          imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: things2do-frontend
+spec:
+  selector:
+    app: things2do-frontend
+  ports:
+    - port: 80
+      targetPort: 80
+  type: LoadBalancer

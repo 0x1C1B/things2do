@@ -37,11 +37,6 @@ services:
       DATABASE_URI: mongodb://database:27017/things2do
     expose:
       - 3000
-    volumes:
-      - type: bind
-        source: ./backend/resources
-        target: /usr/local/bin/things2do/backend/resources
-        read_only: true
     labels:
       - traefik.enable=true
       - traefik.http.routers.backend.entrypoints=backend
