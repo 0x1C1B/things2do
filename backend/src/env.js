@@ -7,12 +7,9 @@ import fs from "fs";
 import dotenv from "dotenv";
 import joi from "joi";
 
-function loadEnvironmentFiles() {
+(() => {
   /**
-   * Paths in which to search for environment files.
-   *
-   * Basically, environment files are searched for in the current working directory and in
-   * the 'resources' folder in the project directory.
+   * Contains the paths of all environment files to be loaded.
    *
    * The order of the paths is essential, the environment files are read in this order.
    * Environment files that are already set and appear again in a later file are not set
@@ -20,10 +17,10 @@ function loadEnvironmentFiles() {
    * values of lower-ordered paths.
    */
   const locations = [
+    path.resolve(process.cwd(), `.env.${process.env.NODE_ENV}.local`),
     path.resolve(process.cwd(), `.env.${process.env.NODE_ENV}`),
-    path.resolve(__dirname, `../resources/.env.${process.env.NODE_ENV}`),
+    path.resolve(process.cwd(), ".env.local"),
     path.resolve(process.cwd(), ".env"),
-    path.resolve(__dirname, "../resources/.env"),
   ];
 
   locations.forEach((location) => {
@@ -31,13 +28,7 @@ function loadEnvironmentFiles() {
       dotenv.config({ path: location });
     }
   });
-}
-
-/*
- * Expands the set environment variables by the configuration of the environment files.
- */
-
-loadEnvironmentFiles();
+})();
 
 const envSchema = joi
   .object()

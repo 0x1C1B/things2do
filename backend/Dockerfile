@@ -24,9 +24,8 @@ COPY --from=build /usr/local/src/things2do/backend/package-lock.json ./package-l
 RUN npm install --production
 
 COPY --from=build /usr/local/src/things2do/backend/dist ./dist
+COPY ./resources ./resources
 
 EXPOSE 3000
-
-VOLUME [ "/usr/local/bin/things2do/backend/resources" ]
 
 CMD npm run start
