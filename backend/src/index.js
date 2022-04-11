@@ -42,8 +42,10 @@ app.use(
     ip: true,
   })
 );
-app.use(cors());
 app.use(morgan());
+
+app.use(cors());
+app.opts("*", cors());
 
 const onRestifyError = (req, res, err, next) => {
   if (!(err instanceof errors.HttpError)) {
