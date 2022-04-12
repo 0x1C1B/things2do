@@ -2,9 +2,9 @@ import React, { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/solid";
 import { Formik } from "formik";
-import { createGroup } from "../../api/groups";
+import { createTaskInGroup } from "../../api/tasks";
 
-export default function GroupCreationModal({ onSuccess, children }) {
+export default function TaskCreationModal({ onSuccess, children, groupId }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -17,14 +17,18 @@ export default function GroupCreationModal({ onSuccess, children }) {
     setOpen(true);
   };
 
-  const onCreateGroup = async (values) => {
+  const onCreateTask = async (values) => {
     setLoading(true);
     setError(null);
 
     try {
-      await createGroup({
+      await createTaskInGroup(groupId, {
         name: values.name,
         description: values.description || undefined,
+        priority: values.priority || undefined,
+        expiresAt: values.expiresAt
+          ? new Date(values.expiresAt).toISOString()
+          : undefined,
       });
 
       setOpen(false);
@@ -80,7 +84,7 @@ export default function GroupCreationModal({ onSuccess, children }) {
                     as="h3"
                     className="text-lg font-medium leading-6"
                   >
-                    Create group
+                    Create task
                   </Dialog.Title>
                   <button
                     onClick={onCloseModal}
@@ -92,8 +96,13 @@ export default function GroupCreationModal({ onSuccess, children }) {
                 </div>
                 {error && <p className="text-center text-red-500">{error}</p>}
                 <Formik
-                  initialValues={{ name: "", description: "" }}
-                  onSubmit={onCreateGroup}
+                  initialValues={{
+                    name: "",
+                    description: "",
+                    priority: "",
+                    expiresAt: "",
+                  }}
+                  onSubmit={onCreateTask}
                 >
                   {(props) => (
                     <form
@@ -132,6 +141,43 @@ export default function GroupCreationModal({ onSuccess, children }) {
                           touched={
                             props.errors.description &&
                             props.touched.description
+                          }
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label for="priority-select">Priority</label>
+                        <input
+                          className="relative bg-white dark:bg-gray-700 text-gray-800 dark:text-white placeholder-gray-300 placeholder-gray-400 border border-gray-300 dark:border-gray-500 block w-full px-3 py-2 rounded-md focus:outline-none focus:outline-sky-500 disabled:opacity-50"
+                          id="priority-select"
+                          type="number"
+                          name="priority"
+                          min="1"
+                          max="10"
+                          placeholder="Priority"
+                          onChange={props.handleChange}
+                          onBlur={props.handleChange}
+                          value={props.values.priority}
+                          error={props.errors.priority}
+                          touched={
+                            props.errors.priority && props.touched.priority
+                          }
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label for="expiresAt-select">Expires at</label>
+                        <input
+                          className="relative bg-white dark:bg-gray-700 text-gray-800 dark:text-white placeholder-gray-300 placeholder-gray-400 border border-gray-300 dark:border-gray-500 block w-full px-3 py-2 rounded-md focus:outline-none focus:outline-sky-500 disabled:opacity-50"
+                          id="expiresAt-select"
+                          type="datetime-local"
+                          name="expiresAt"
+                          placeholder="Expires at"
+                          onChange={props.handleChange}
+                          onBlur={props.handleChange}
+                          value={props.values.expiresAt}
+                          error={props.errors.expiresAt}
+                          touched={
+                            props.errors.expiresAt &&
+                            props.touched.prioriexpiresAtty
                           }
                         />
                       </div>
