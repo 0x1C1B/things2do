@@ -68,15 +68,12 @@ export default function GroupList() {
               {({ open }) => (
                 <>
                   <Disclosure.Button
-                    className={`flex justify-between space-x-4 w-full px-4 py-2 font-medium text-left text-sky-900 bg-sky-100 rounded-lg ${
+                    className={`flex justify-between space-x-4 w-full px-6 py-4 font-medium text-left text-sky-900 bg-sky-100 dark:bg-sky-700 dark:text-sky-100 rounded-lg ${
                       open && "rounded-b-none"
                     } hover:bg-sky-200 focus:outline-none focus-visible:ring focus-visible:ring-sky-500 focus-visible:ring-opacity-75`}
                   >
-                    <div className="truncate">
-                      <h2 className="text-xl">{group.name}</h2>
-                      {group.description && (
-                        <span className="text-sm">{group.description}</span>
-                      )}
+                    <div className="w-full overflow-hidden">
+                      <h2 className="text-xl truncate">{group.name}</h2>
                     </div>
                     <div>
                       <ChevronUpIcon
@@ -87,7 +84,8 @@ export default function GroupList() {
                     </div>
                   </Disclosure.Button>
                   <Disclosure.Panel className="text-gray-800 dark:text-white bg-gray-50 dark:bg-gray-700 rounded-lg rounded-t-none">
-                    <div className="p-4">
+                    <div className="p-4 flex flex-col space-y-4">
+                      {group.description && <p>{group.description}</p>}
                       <TaskList group={group} />
                     </div>
                   </Disclosure.Panel>

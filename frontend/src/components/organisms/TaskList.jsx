@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon, PlusIcon } from "@heroicons/react/solid";
 import TaskCreationModal from "./TaskCreationModal";
-import { fetchTasksOfGroup } from "../../api/tasks";
+import { fetchTasksOfGroup, updateTask } from "../../api/tasks";
 
 export default function TaskList({ group }) {
   const [loading, setLoading] = useState(false);
@@ -24,16 +24,40 @@ export default function TaskList({ group }) {
     }
   };
 
+  const onToggleTaskFinishedState = async (id, finished) => {
+    setError(null);
+
+    try {
+      const res = await updateTask(id, { finished: !finished });
+      setTasks(
+        tasks.map((task) => (task.id !== res.data.id ? task : res.data))
+      );
+    } catch (err) {
+      setError("An unexpected error occurred, please retry!");
+      throw err;
+    }
+  };
+
   useEffect(() => {
     onFetchTasks();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getTimeRemainingInDays = (d1) => {
+  /**
+   * Calculates the remaining time until a timestamp.
+   *
+   * @param {string|number|Date} d1 Timestamp reference
+   * @returns Returns the remaining time in hours, if the timestamp has already passed, 0 is returned
+   */
+  const getTimeRemaining = (d1) => {
     const t1 = new Date(d1).getTime();
     const t2 = Date.now();
 
-    return Math.floor((t1 - t2) / (24 * 3600 * 1000));
+    if (t1 - t2 < 0) {
+      return 0;
+    }
+
+    return Math.floor((t1 - t2) / (3600 * 1000));
   };
 
   const hasAlreadyExpired = (d1) => {
@@ -45,7 +69,19 @@ export default function TaskList({ group }) {
 
   return (
     <div className="flex flex-col space-y-4">
-      <div className="flex space-x-2 items-center justify-end">
+      <div
+        className={`flex space-x-2 items-center ${
+          !loading && !error && tasks.length > 0
+            ? "justify-between"
+            : "justify-end"
+        }`}
+      >
+        {!loading && !error && tasks.length > 0 && (
+          <p className="text-sm font-medium text-gray-800 dark:text-white">
+            Finished {tasks.filter((task) => task.finished).length} of&nbsp;
+            {tasks.length} tasks
+          </p>
+        )}
         <div className="flex space-x-4">
           <TaskCreationModal
             groupId={group.id}
@@ -83,7 +119,7 @@ export default function TaskList({ group }) {
               {({ open }) => (
                 <>
                   <div
-                    className={`flex justify-between items-center space-x-4 w-full px-4 py-2 text-emerald-900 bg-emerald-100 ${
+                    className={`flex justify-between items-center space-x-4 w-full px-4 py-2 text-emerald-900 bg-emerald-100 dark:bg-emerald-700 dark:text-emerald-100 ${
                       open && "rounded-b-none"
                     } rounded-lg hover:bg-emerald-200 focus:outline-none focus-visible:ring focus-visible:ring-emerald-500 focus-visible:ring-opacity-75`}
                   >
@@ -91,36 +127,37 @@ export default function TaskList({ group }) {
                       name="finished"
                       id="finished-checkbox"
                       type="checkbox"
-                      className="w-4 h-4"
+                      className="w-4 h-4 min-w-fit min-h-fit"
                       checked={task.finished}
-                      onChange={() => {}}
+                      onChange={() =>
+                        onToggleTaskFinishedState(task.id, task.finished)
+                      }
                     />
                     <Disclosure.Button className="flex space-x-4 grow font-medium text-left truncate">
                       <div className="grow flex flex-col space-y-2 md:space-y-0 md:space-x-2 md:flex-row md:items-center justify-between truncate">
                         <div className="truncate">
-                          <h2 className="text-xl flex items-center">
+                          <h3 className="text-lg flex items-center">
                             <span>{task.name}</span>
                             {task.priority && (
-                              <span class="ml-2 inline-block px-1.5 py-0.5 text-xs rounded-lg text-center bg-sky-500 text-white">
+                              <span className="ml-2 inline-block px-1.5 py-0.5 text-xs rounded-lg text-center bg-sky-500 text-white">
                                 {task.priority}
                               </span>
                             )}
-                          </h2>
-                          {task.description && (
-                            <div className="text-sm">{task.description}</div>
-                          )}
+                          </h3>
                         </div>
                         {task.expiresAt &&
+                          !task.finished &&
                           !hasAlreadyExpired(task.expiresAt) &&
-                          getTimeRemainingInDays(task.expiresAt) <= 1 && (
-                            <span class="max-w-fit inline-block px-1.5 py-0.5 text-xs rounded-lg text-center bg-orange-500 text-white">
-                              Expires soon
+                          getTimeRemaining(task.expiresAt) <= 24 && (
+                            <span className="max-w-fit inline-block px-1.5 py-0.5 text-xs rounded-lg text-center bg-orange-500 text-white">
+                              Expires in {getTimeRemaining(task.expiresAt)}
+                              &nbsp;hours
                             </span>
                           )}
                         {task.expiresAt &&
                           !task.finished &&
                           hasAlreadyExpired(task.expiresAt) && (
-                            <span class="max-w-fit inline-block px-1.5 py-0.5 text-xs rounded-lg text-center bg-red-500 text-white">
+                            <span className="max-w-fit inline-block px-1.5 py-0.5 text-xs rounded-lg text-center bg-red-500 text-white">
                               Expired
                             </span>
                           )}
@@ -135,7 +172,31 @@ export default function TaskList({ group }) {
                     </Disclosure.Button>
                   </div>
                   <Disclosure.Panel className="text-gray-800 dark:text-white bg-gray-100 dark:bg-gray-800 rounded-lg rounded-t-none">
-                    <div className="p-4"></div>
+                    <div className="p-4 flex flex-col space-y-4">
+                      {task.description && <p>{task.description}</p>}
+                      {task.expiresAt &&
+                        !task.finished &&
+                        hasAlreadyExpired(task.expiresAt) && (
+                          <p className={`text-xs text-red-500`}>
+                            Expired since&nbsp;
+                            {new Date(task.expiresAt).toLocaleString()}
+                          </p>
+                        )}
+                      {task.expiresAt &&
+                        task.finished &&
+                        hasAlreadyExpired(task.expiresAt) && (
+                          <p className={`text-xs`}>
+                            Expired at&nbsp;
+                            {new Date(task.expiresAt).toLocaleString()}
+                          </p>
+                        )}
+                      {task.expiresAt && !hasAlreadyExpired(task.expiresAt) && (
+                        <p className="text-xs">
+                          Expires at &nbsp;
+                          {new Date(task.expiresAt).toLocaleString()}
+                        </p>
+                      )}
+                    </div>
                   </Disclosure.Panel>
                 </>
               )}
