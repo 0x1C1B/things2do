@@ -4,11 +4,9 @@ services:
     image: traefik:latest
     command:
       - --providers.docker
-      - --entryPoints.frontend.address=:80
-      - --entryPoints.backend.address=:8080
+      - --entryPoints.web.address=:80
     ports:
       - 80:80
-      - 8080:8080
     volumes:
       - type: bind
         source: /var/run/docker.sock
@@ -24,7 +22,7 @@ services:
       - 27017
   backend:
     build:
-      context: ./backend
+      context: ../backend
     image: things2do/backend
     depends_on:
       - database
@@ -39,31 +37,32 @@ services:
       - 3000
     labels:
       - traefik.enable=true
-      - traefik.http.routers.backend.entrypoints=backend
-      - traefik.http.routers.backend.rule=PathPrefix(`/`)
+      - traefik.http.routers.backend.entrypoints=web
+      - traefik.http.routers.backend.rule=PathPrefix(`/backend`)
+      - traefik.http.routers.backend.middlewares=backend-stripprefix
+      - traefik.http.middlewares.backend-stripprefix.stripprefix.prefixes=/backend
   frontend:
     build:
-      context: ./frontend
+      context: ../frontend
       args:
         # The frontend is run by the browser. Each API call is made from
         # outside of the virtual docker network and must therefore be made
         # through the gateway. Therefore, the gateway address and not the
         # address of the backend container should be specified here.
-        #
-        # The argument is passed to the SPA at build time and hardcoded by
-        # the build tools. The browser does not recognize environment
-        # variables at runtime.
-        THINGS2DO_API: ${THINGS2DO_API:-http://localhost:8080}
+        THINGS2DO_API: http://localhost:80/backend
+        # Reverse proxy prefix which must be made known to the application
+        # for client-side routing and static assets.
+        PUBLIC_URL: /frontend
     image: things2do/frontend
     restart: always
-    environment:
-      PORT: 80
     expose:
       - 80
     labels:
       - traefik.enable=true
-      - traefik.http.routers.frontend.entrypoints=frontend
-      - traefik.http.routers.frontend.rule=PathPrefix(`/`)
+      - traefik.http.routers.frontend.entrypoints=web
+      - traefik.http.routers.frontend.rule=PathPrefix(`/frontend`)
+      - traefik.http.routers.frontend.middlewares=frontend-stripprefix
+      - traefik.http.middlewares.frontend-stripprefix.stripprefix.prefixes=/frontend
 volumes:
   datadb:
   configdb:

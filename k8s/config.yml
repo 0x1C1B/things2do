@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: things2do-config
+  namespace: things2do
+data:
+  database.uri: mongodb://things2do-database.things2do.svc.cluster.local:27017/things2do

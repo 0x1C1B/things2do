@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: things2do-frontend
+  namespace: things2do
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: things2do/frontend:latest
+          resources:
+            limits:
+              memory: 200Mi
+              cpu: "1"
+          ports:
+            - containerPort: 80
+          imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: things2do-frontend
+  namespace: things2do
+spec:
+  selector:
+    app: frontend
+  ports:
+    - port: 80
+      targetPort: 80

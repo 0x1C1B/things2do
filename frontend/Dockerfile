@@ -10,6 +10,9 @@ RUN npm install
 ARG THINGS2DO_API
 ENV REACT_APP_THINGS2DO_API=$THINGS2DO_API
 
+ARG PUBLIC_URL
+ENV PUBLIC_URL=$PUBLIC_URL
+
 COPY .env* .
 COPY tailwind.config.js ./tailwind.config.js
 COPY src ./src
