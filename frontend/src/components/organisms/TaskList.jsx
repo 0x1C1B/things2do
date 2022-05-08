@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon, PlusIcon } from "@heroicons/react/solid";
 import TaskCreationModal from "./TaskCreationModal";
+import MilestoneList from "./MilestoneList";
 import { fetchTasksOfGroup, updateTask } from "../../api/tasks";
 
 export default function TaskList({ group }) {
@@ -77,7 +78,7 @@ export default function TaskList({ group }) {
         }`}
       >
         {!loading && !error && tasks.length > 0 && (
-          <p className="text-sm font-medium text-gray-800 dark:text-white">
+          <p className="text-sm font-semibold text-gray-800 dark:text-white">
             Finished {tasks.filter((task) => task.finished).length} of&nbsp;
             {tasks.length} tasks
           </p>
@@ -196,6 +197,7 @@ export default function TaskList({ group }) {
                           {new Date(task.expiresAt).toLocaleString()}
                         </p>
                       )}
+                      <MilestoneList task={task} />
                     </div>
                   </Disclosure.Panel>
                 </>
